@@ -1,0 +1,24 @@
+private static String convertToRTF(String htmlStr) {
+
+	    OutputStream os = new ByteArrayOutputStream();
+	    HTMLEditorKit htmlEditorKit = new HTMLEditorKit();
+	    RTFEditorKit rtfEditorKit = new RTFEditorKit();
+	    String rtfStr = null;
+
+	    htmlStr = htmlStr.replaceAll("<br.*?>","#NEW_LINE#");
+	    htmlStr = htmlStr.replaceAll("</p>","#NEW_LINE#");
+	    htmlStr = htmlStr.replaceAll("<p.*?>","");
+	    InputStream is = new ByteArrayInputStream(htmlStr.getBytes());
+	    try {
+	        Document doc = htmlEditorKit.createDefaultDocument();
+	        htmlEditorKit.read(is, doc, 0);
+	        rtfEditorKit .write(os, doc, 0, doc.getLength());
+	        rtfStr = os.toString();
+	        rtfStr = rtfStr.replaceAll("#NEW_LINE#","\\\\par ");
+	    } catch (IOException e) {
+	          e.printStackTrace();
+	        } catch (BadLocationException e) {
+	          e.printStackTrace();
+	        }
+	    return rtfStr;
+	}
